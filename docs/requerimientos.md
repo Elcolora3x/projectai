@@ -1,0 +1,5 @@
+- Panel administración de eventos
+    - Crear Evento
+    - Modificar Evento
+    - Eliminar Evento
+    - Notificar Evento
