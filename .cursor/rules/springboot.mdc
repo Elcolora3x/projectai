@@ -1,0 +1,78 @@
+---
+description: Estándares Java 25 y Spring Boot para este proyecto (nombres en inglés, Javadoc, records, estructura).
+alwaysApply: true
+---
+
+# Spring Boot + Java 25 (projectai)
+
+Aplica estas convenciones en todo el código Java de este repositorio.
+
+## Estructura del proyecto
+
+Raíz Maven y wrapper:
+
+```text
+projectai/
+├── pom.xml
+├── mvnw
+├── mvnw.cmd
+├── .mvn/wrapper/
+├── src/main/java/com/elcolora2x/dev/projectai/
+│   ├── ProjectaiApplication.java
+│   ├── service/                 # lógica de negocio (existente; ampliar aquí)
+│   ├── controller/              # REST: `@RestController`, mapeo HTTP
+│   ├── repository/              # acceso a datos (Spring Data, JDBC, etc.)
+│   ├── dto/                     # contratos API / capas: **solo `record`**
+│   ├── domain/ o model/         # entidades de persistencia si aplica
+│   ├── config/                  # `@Configuration`, beans, seguridad, WebMvc
+│   └── exception/               # excepciones y `@ControllerAdvice` si aplica
+├── src/main/resources/
+│   ├── application.properties
+│   ├── static/
+│   └── templates/
+└── src/test/java/com/elcolora2x/dev/projectai/
+    └── …                        # tests espejo del paquete principal
+```
+
+- Nuevas piezas van bajo `com.elcolora2x.dev.projectai`; no crear paquetes paralelos fuera de ese árbol sin motivo.
+- Recursos y perfilado: `application.properties` / `application-*.properties` en `src/main/resources`.
+
+## Idioma de identificadores
+
+- **Clases, métodos, campos, parámetros y paquetes adicionales**: nombres en **inglés** (`UserService`, `findById`, `createdAt`).
+- Mensajes de log, textos de error orientados a usuario y Javadoc pueden estar en el idioma del producto si el equipo lo define; los **identificadores** siguen en inglés.
+
+## Javadoc
+
+- **Todo método `public`**, incluidos los de interfaces, records públicos (constructor compacto implícito: documentar el record y sus componentes con `@param` en el tipo si aporta claridad), y métodos `public static void main`, debe llevar Javadoc **actualizado**.
+- Incluir al menos: descripción breve, `@param` / `@return` / `@throws` cuando existan, y `@since` o notas de API si es estable públicamente.
+- Clases públicas de API (controllers expuestos, servicios reutilizables, DTOs públicos) deben tener un resumen de clase.
+
+## DTOs: Java `record`
+
+- Usar **`record`** para DTOs de entrada/salida, respuestas REST y objetos de transferencia entre capas cuando no requieran mutabilidad.
+- Validación: anotaciones Jakarta Bean Validation en componentes del record cuando corresponda (`@NotNull`, etc.).
+- No usar Lombok `@Data` / clases mutables para DTOs; reservar entidades JPA u otros modelos mutables a `domain`/`model` si se introducen.
+
+## Java 25 y lenguaje moderno
+
+- Preferir **APIs modernas**: `Optional` con moderación en fronteras; evitar APIs obsoletas (`Date` legado, etc.) salvo interoperabilidad.
+- **Patrones y `switch`**: usar pattern matching, `switch` exhaustivo y sealed types cuando simplifique el diseño.
+- **Constructores flexibles (JEP 513)**: si encaja, validar o preparar estado antes de `this()`/`super()` en constructores; mantener invariantes claras.
+- **Preview / incubadora**: no activar en producción sin consenso del equipo; si se usan, documentar en `pom.xml` y revisar en cada upgrade de JDK.
+- **Concurrencia**: para I/O intensivo, valorar **virtual threads** (`spring.threads.virtual.enabled=true` en Boot 3.2+ donde aplique) y APIs de concurrencia estructurada solo donde el stack y la versión de Spring lo soporten de forma estable.
+- **Inmutabilidad**: preferir campos `final` y colecciones no modificables en servicios cuando no haya necesidad de mutar.
+
+## Spring Boot
+
+- **Capas**: controllers delgados; reglas de negocio en `service`; persistencia en `repository`. No acceder a repositorios directamente desde controllers salvo casos triviales acordados.
+- **Inyección**: constructor injection; evitar `@Autowired` en campos.
+- **Configuración**: externalizar en `application.properties`; secretos vía variables de entorno o mecanismos seguros, nunca en código.
+- **REST**: códigos HTTP y problem details / cuerpos de error coherentes; usar DTOs record, no exponer entidades internas.
+- **Pruebas**: `@SpringBootTest` o slices (`@WebMvcTest`, `@DataJpaTest`) según el alcance; nombres de test en inglés (`shouldReturn404WhenMissing`).
+
+## Estilo y calidad
+
+- Formato y convenciones alineadas con el código existente del módulo.
+- Evitar bloques vacíos `catch`; registrar o relanzar con contexto.
+- Documentar decisiones no obvias en Javadoc o comentarios mínimos junto al código, no en archivos markdown no solicitados.
