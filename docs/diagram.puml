@@ -1,0 +1,43 @@
+@startuml
+
+class Event {
+  private UUID id
+  private String name
+  private Place place
+  private Instant start
+  private Instant end
+  private Int capacity
+  private String description
+  private User admin
+}
+
+class Place {
+    private UUID id
+    private String coordenates
+    private String metadataDescription
+}
+
+class User {
+  private UUID id
+  private String email
+  private String password
+}
+
+class Assistance {
+  private UUID id
+  private Event event
+  private User user (Optional)
+  private String email
+  private String PersonId
+  private Enum PersonIdType
+}
+
+class AssistanceDTO {
+  private UUID eventId
+}
+
+enum PersonIdType{
+
+}
+
+@enduml
