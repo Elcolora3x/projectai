@@ -1,13 +1,10 @@
 package com.elcolora2x.dev.projectai.repository;
 
+import com.elcolora2x.dev.projectai.entity.model.Place;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import com.elcolora2x.dev.projectai.entity.model.Place;
-
-@Repository
 public interface PlaceRepository extends JpaRepository<Place, UUID> {
-
+    List<Place> findByAdressContainingIgnoreCase(String adress);
 }
