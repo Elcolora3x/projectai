@@ -1,6 +1,7 @@
 package com.elcolora2x.dev.projectai.entity.model;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.SQLDelete;
@@ -27,15 +28,19 @@ public class Event { // 6. Convención: Clases en Mayúscula (PascalCase)
  
     @Id // 7. Define la llave primaria
     @GeneratedValue(strategy = GenerationType.UUID) // Genera el UUID automáticamente
-     private UUID eventUuid;
+    private UUID eventUuid;
 
-     @Column(nullable = false)
+    @Column(nullable = false)
     private String name;
 
     // 8. Relaciones: Si 'Place' y 'User' son otras entidades, necesitas anotarlas
     @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude // ¡Importante para evitar bucles!
+    private List<Assistance> assistances;
 
     @Column(nullable = false)
     private Instant startDate;
