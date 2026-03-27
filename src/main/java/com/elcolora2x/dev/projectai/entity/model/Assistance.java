@@ -31,11 +31,6 @@ public class Assistance {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    // Relación opcional: El usuario puede estar registrado o ser un invitado anónimo
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") 
-    private User user;
-
     @Column(nullable = false)
     private String email;
 
