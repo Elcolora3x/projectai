@@ -50,7 +50,7 @@ public class Event { // 6. Convención: Clases en Mayúscula (PascalCase)
     private Integer capacity;
 
     @Column(columnDefinition = "TEXT") // 9. Para strings largos (descripciones/JSON)
-    private String metadata; 
+    private String metadata;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizer_id", nullable = false)

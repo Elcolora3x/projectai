@@ -14,8 +14,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EventFullException.class)
-    public ResponseEntity<ErrorResponse> handleEventFull(EventFullException ex, HttpServletRequest request) {
+    @ExceptionHandler(EventFullCapacityAccomplishedException.class)
+    public ResponseEntity<ErrorResponse> handleEventFull(EventFullCapacityAccomplishedException ex, HttpServletRequest request) {
         var status = HttpStatus.BAD_REQUEST;
         var body = new ErrorResponse(status.value(), status.getReasonPhrase(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(body);
